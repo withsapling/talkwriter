@@ -2,31 +2,34 @@ import { html } from "@sapling/sapling";
 
 export function Talkwriter() {
   return html`
-    <div class="talkwriter-container">
+    <div class="w-full talkwriter-container">
       <div id="textarea-container" class="hidden">
-        <textarea
-          id="message-input"
-          class="w-full h-48 p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
-        ></textarea>
+        <div class="w-full">
+          <textarea
+            id="message-input"
+            class="w-full h-48 p-4 mb-4 bg-gray-50 rounded-lg border border-gray-200 shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400 transition-all duration-200 text-gray-700 font-medium resize-none"
+            placeholder="Your transcription will appear here..."
+          ></textarea>
+        </div>
 
-        <div class="flex justify-between">
+        <div class="flex flex-col space-y-3 w-full">
           <button
             id="new-recording-button"
-            class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+            class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-200 shadow-sm font-medium w-full"
           >
             New Recording
           </button>
 
           <button
             id="copy-button"
-            class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
+            class="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors duration-200 shadow-sm font-medium w-full text-center"
           >
             Copy to Clipboard
           </button>
         </div>
       </div>
 
-      <div id="microphone-container">
+      <div id="microphone-container" class="flex justify-center">
         <sapling-island>
           <template>
             <script>
@@ -66,7 +69,7 @@ export function Talkwriter() {
                   // Hide textarea, show microphone
                   textareaContainer.classList.add("hidden");
                   microphoneContainer.classList.remove("hidden");
-
+                  microphoneContainer.classList.add("flex");
                   // Clear the textarea
                   if (messageInput) {
                     messageInput.value = "";
@@ -88,6 +91,7 @@ export function Talkwriter() {
                       navigator.clipboard
                         .writeText(messageInput.value)
                         .then(() => {
+                          const originalText = copyButton.textContent;
                           copyButton.textContent = "Copied!";
                           setTimeout(() => {
                             copyButton.textContent = "Copy to Clipboard";
@@ -194,6 +198,7 @@ export function Talkwriter() {
 
                             // Show textarea, hide microphone
                             textareaContainer.classList.remove("hidden");
+                            microphoneContainer.classList.remove("flex");
                             microphoneContainer.classList.add("hidden");
                           } else {
                             console.error(
