@@ -7,18 +7,21 @@ export async function geminiFlashTranscribe(c: Context) {
   try {
     const formData = await c.req.formData();
     const audioFile = formData.get("audio") as File;
+    const apiKey = formData.get("apiKey") as string;
 
     if (!audioFile) {
       return c.json({ error: "No audio file provided" }, 400);
+    }
+
+    if (!apiKey) {
+      return c.json({ error: "No API key provided" }, 400);
     }
 
     // Convert the audio file to base64
     const arrayBuffer = await audioFile.arrayBuffer();
     const base64Audio = Buffer.from(arrayBuffer).toString("base64");
 
-    const googleAIClient = new GoogleGenerativeAI(
-      Deno.env.get("GEMINI_API_KEY")!
-    );
+    const googleAIClient = new GoogleGenerativeAI(apiKey);
     const model = googleAIClient.getGenerativeModel({
       model: "gemini-2.0-flash-lite",
       systemInstruction: transcribeAudioPrompt,
