@@ -9,6 +9,12 @@ export function BaseHead({
     <meta name="description" content="${description}" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta property="og:image" content="/social.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#000" />
+    <script
+      src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"
+      defer
+    ></script>
     <style>
       :root {
         --color-primary: #000;
@@ -20,5 +26,19 @@ export function BaseHead({
         color: var(--color-on-primary);
       }
     </style>
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("/sw.js")
+            .then((registration) => {
+              console.log("ServiceWorker registration successful");
+            })
+            .catch((err) => {
+              console.log("ServiceWorker registration failed: ", err);
+            });
+        });
+      }
+    </script>
   `;
 }

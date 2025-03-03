@@ -22,10 +22,10 @@ site.get("*", serveStatic({ root: "./static" }));
 site.notFound(async (c) => c.html(await NotFoundLayout()));
 
 Deno.serve({
-  port: 8080,
+  port: 8000,
   onListen: () =>
     console.log(
-      `\nSapling Server is running on %chttp://localhost:8080\n`,
+      `\nSapling Server is running on %chttp://localhost:8000\n`,
       "color: green; font-weight: bold"
     ),
   handler: site.fetch,
