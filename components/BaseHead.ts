@@ -28,16 +28,23 @@ export function BaseHead({
     </style>
     <script>
       if ("serviceWorker" in navigator) {
-        window.addEventListener("load", () => {
-          navigator.serviceWorker
-            .register("/sw.js")
-            .then((registration) => {
-              console.log("ServiceWorker registration successful");
-            })
-            .catch((err) => {
-              console.log("ServiceWorker registration failed: ", err);
-            });
-        });
+        // Skip service worker registration on localhost
+        const isLocalhost =
+          window.location.hostname === "localhost" ||
+          window.location.hostname === "127.0.0.1";
+
+        if (!isLocalhost) {
+          window.addEventListener("load", () => {
+            navigator.serviceWorker
+              .register("/sw.js")
+              .then((registration) => {
+                console.log("ServiceWorker registration successful");
+              })
+              .catch((err) => {
+                console.log("ServiceWorker registration failed: ", err);
+              });
+          });
+        }
       }
     </script>
   `;
