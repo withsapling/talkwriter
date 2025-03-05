@@ -10,10 +10,10 @@ export async function Home() {
       "Talkwriter is a tool that allows you to write text using your voice.",
     children: await html`
       <main
-        class="max-w-screen-lg min-h-screen mx-auto px-4 py-16 flex flex-col items-center justify-center font-sans"
+        class="max-w-screen-lg min-h-screen mx-auto px-4 py-8 flex flex-col items-center justify-center font-sans"
       >
         <div class="w-full max-w-md flex flex-col items-center">
-          ${GeminiApiKeyForm()} ${Talkwriter()}
+          <div class="w-full">${GeminiApiKeyForm()} ${Talkwriter()}</div>
         </div>
       </main>
     `,
