@@ -23,8 +23,8 @@ export function BaseHead({
         --color-on-primary: #000;
       }
       ::selection {
-        background-color: var(--color-primary);
-        color: var(--color-on-primary);
+        background-color: var(--color-on-background);
+        color: var(--color-background);
       }
     </style>
     <script>
