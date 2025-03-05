@@ -17,9 +17,10 @@ export function BaseHead({
     ></script>
     <style>
       :root {
-        --color-primary: #000;
-        --color-on-primary: #fff;
-        --color-secondary: #fff;
+        --color-background: #141414;
+        --color-on-background: #fff;
+        --color-primary: #fff;
+        --color-on-primary: #000;
       }
       ::selection {
         background-color: var(--color-primary);

@@ -2,12 +2,12 @@ import { html } from "@sapling/sapling";
 
 export function Talkwriter() {
   return html`
-    <div class="w-full talkwriter-container">
+    <div class="w-full talkwriter-container" style="display: none;">
       <div id="textarea-container" class="hidden">
         <div class="w-full">
           <textarea
             id="message-input"
-            class="w-full h-48 p-4 mb-4 bg-gray-50 rounded-lg border border-gray-200 shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400 transition-all duration-200 text-gray-700 font-medium resize-none"
+            class="w-full h-48 p-4 mb-4 rounded-[16px] border shadow-sm focus:outline-none transition-all duration-200 font-medium resize-none"
             placeholder="Your transcription will appear here..."
           ></textarea>
         </div>
@@ -15,14 +15,14 @@ export function Talkwriter() {
         <div class="flex flex-col space-y-3 w-full">
           <button
             id="new-recording-button"
-            class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-200 shadow-sm font-medium w-full"
+            class="px-4 py-3 text-white rounded-[16px] transition-all duration-200 font-medium w-full"
           >
             New Recording
           </button>
 
           <button
             id="copy-button"
-            class="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors duration-200 shadow-sm font-medium w-full text-center"
+            class="px-4 py-3 rounded-[16px] transition-all duration-200 font-medium w-full text-center"
           >
             Copy to Clipboard
           </button>
@@ -32,8 +32,126 @@ export function Talkwriter() {
       <div id="microphone-container" class="flex justify-center">
         <sapling-island>
           <template>
-            <script>
-              document.addEventListener("DOMContentLoaded", () => {
+            <style>
+              .border-gradient {
+                border-radius: 24px;
+              }
+
+              .border-gradient::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                border-radius: 24px;
+                padding: 2px;
+                background: linear-gradient(
+                  180deg,
+                  #383838 0%,
+                  #141414 7%,
+                  #000000 93%,
+                  #212121 100%
+                );
+                -webkit-mask: linear-gradient(#fff 0 0) content-box,
+                  linear-gradient(#fff 0 0);
+                -webkit-mask-composite: xor;
+                mask-composite: exclude;
+              }
+
+              #voice-record-button {
+                position: relative;
+                background: linear-gradient(180deg, #1a1a1a 0%, #131313 100%);
+                transform: translateY(0) translateX(0) rotate(0deg);
+                transform-origin: center bottom;
+                box-shadow: -1px 4px 10px rgba(0, 0, 0, 0.25);
+                transition: all 0.08s ease-in-out;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+              }
+
+              /* Button press effect */
+              #voice-record-button:active,
+              #voice-record-button.pressed {
+                transform: translateY(2px) translateX(1px) rotate(0.5deg);
+                box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
+                border-top-color: transparent;
+              }
+
+              #voice-record-button.recording ~ .border-gradient::before {
+                background: linear-gradient(
+                  180deg,
+                  #383838 0%,
+                  #141414 7%,
+                  #000000 93%,
+                  #212121 100%
+                );
+                opacity: 1;
+                padding: 2.5px;
+              }
+
+              #voice-record-button.animate-pulse {
+                animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+              }
+
+              @keyframes pulse {
+                0%,
+                100% {
+                  opacity: 1;
+                }
+                50% {
+                  opacity: 0.5;
+                }
+              }
+
+              /* Additional styles for consistency */
+              #new-recording-button,
+              #copy-button {
+                border: none;
+                font-weight: 500;
+                box-shadow: -1px 2px 4px rgba(0, 0, 0, 0.1);
+                transform: translateY(0) translateX(0) rotate(0deg);
+                transform-origin: center bottom;
+                transition: all 0.08s ease-in-out;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+              }
+
+              #new-recording-button:active,
+              #copy-button:active,
+              #new-recording-button.pressed,
+              #copy-button.pressed {
+                transform: translateY(2px) translateX(1px) rotate(0.5deg);
+                box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+                border-top-color: transparent;
+              }
+
+              #new-recording-button {
+                background: #4285f4;
+              }
+
+              #new-recording-button:hover {
+                background: #3367d6;
+              }
+
+              #copy-button {
+                background: #f5f5f5;
+                color: #333333;
+              }
+
+              #copy-button:hover {
+                background: #e8e8e8;
+              }
+
+              #message-input {
+                background: #f5f5f5;
+                color: #333333;
+                border-color: #e0e0e0;
+              }
+
+              #message-input:focus {
+                border-color: #4285f4;
+                box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+              }
+            </style>
+            <script type="module">
+              // Wrap in IIFE to allow return statements
+              (function () {
                 const recordButton = document.getElementById(
                   "voice-record-button"
                 );
@@ -47,6 +165,9 @@ export function Talkwriter() {
                   "new-recording-button"
                 );
                 const copyButton = document.getElementById("copy-button");
+                const microphoneIcon =
+                  document.getElementById("microphone-icon");
+                const stopIcon = document.getElementById("stop-icon");
 
                 // Exit if required elements don't exist
                 if (
@@ -82,6 +203,19 @@ export function Talkwriter() {
                     "click",
                     resetForNewRecording
                   );
+
+                  // Add press effect
+                  newRecordingButton.addEventListener("mousedown", () => {
+                    newRecordingButton.classList.add("pressed");
+                  });
+
+                  newRecordingButton.addEventListener("mouseup", () => {
+                    newRecordingButton.classList.remove("pressed");
+                  });
+
+                  newRecordingButton.addEventListener("mouseleave", () => {
+                    newRecordingButton.classList.remove("pressed");
+                  });
                 }
 
                 // Handle copy button click
@@ -90,17 +224,23 @@ export function Talkwriter() {
                     if (messageInput && messageInput.value) {
                       navigator.clipboard
                         .writeText(messageInput.value)
-                        .then(() => {
-                          const originalText = copyButton.textContent;
-                          copyButton.textContent = "Copied!";
-                          setTimeout(() => {
-                            copyButton.textContent = "Copy to Clipboard";
-                          }, 2000);
-                        })
                         .catch((err) => {
                           console.error("Failed to copy to clipboard:", err);
                         });
                     }
+                  });
+
+                  // Add press effect
+                  copyButton.addEventListener("mousedown", () => {
+                    copyButton.classList.add("pressed");
+                  });
+
+                  copyButton.addEventListener("mouseup", () => {
+                    copyButton.classList.remove("pressed");
+                  });
+
+                  copyButton.addEventListener("mouseleave", () => {
+                    copyButton.classList.remove("pressed");
                   });
                 }
 
@@ -127,6 +267,11 @@ export function Talkwriter() {
                     mediaRecorder.onstart = () => {
                       isRecording = true;
                       recordButton.classList.add("recording");
+                      // Show stop icon, hide microphone icon
+                      if (microphoneIcon && stopIcon) {
+                        microphoneIcon.style.display = "none";
+                        stopIcon.style.display = "block";
+                      }
                       console.log("Recording started");
                     };
 
@@ -149,12 +294,13 @@ export function Talkwriter() {
                       formData.append("audio", audioBlob);
 
                       // Get API key from local storage
-                      const apiKey = localStorage.getItem("gemini_api_key");
+                      const apiKey = localStorage.getItem("geminiApiKey");
                       if (!apiKey) {
                         console.error("No API key found in local storage");
                         return;
                       }
 
+                      // Add the API key to the form data
                       formData.append("apiKey", apiKey);
 
                       try {
@@ -240,6 +386,12 @@ export function Talkwriter() {
                     isRecording = false;
                     recordButton.classList.remove("recording");
 
+                    // Show microphone icon, hide stop icon
+                    if (microphoneIcon && stopIcon) {
+                      microphoneIcon.style.display = "block";
+                      stopIcon.style.display = "none";
+                    }
+
                     // Clean up the stream regardless
                     if (audioStream) {
                       audioStream.getTracks().forEach((track) => track.stop());
@@ -263,27 +415,63 @@ export function Talkwriter() {
                     // Only use keyboard shortcuts when microphone is visible
                     if (!microphoneContainer.classList.contains("hidden")) {
                       e.preventDefault();
+                      recordButton.classList.add("pressed");
                       toggleRecording();
                     }
                   }
                 });
 
+                document.addEventListener("keyup", (e) => {
+                  if ((e.metaKey && e.key === "m") || e.code === "Space") {
+                    recordButton.classList.remove("pressed");
+                  }
+                });
+
                 recordButton.addEventListener("click", toggleRecording);
-              });
+
+                // Add mousedown/mouseup effects for the press animation
+                recordButton.addEventListener("mousedown", () => {
+                  recordButton.classList.add("pressed");
+                });
+
+                recordButton.addEventListener("mouseup", () => {
+                  recordButton.classList.remove("pressed");
+                });
+
+                recordButton.addEventListener("mouseleave", () => {
+                  recordButton.classList.remove("pressed");
+                });
+              })();
             </script>
           </template>
-          <button
-            id="voice-record-button"
-            type="button"
-            class="p-2 rounded-full flex items-center justify-center transition-colors duration-200"
-            title="Record Voice Message (⌘M or Space)"
-          >
-            <iconify-icon
-              icon="mdi:microphone"
-              width="64"
-              height="64"
-            ></iconify-icon>
-          </button>
+          <div class="relative inline-block">
+            <button
+              id="voice-record-button"
+              type="button"
+              class="p-6 rounded-[24px] flex items-center justify-center transition-all duration-200 relative z-10"
+              style="background: linear-gradient(180deg, #1A1A1A 0%, #131313 100%); box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);"
+              title="Record Voice Message (⌘M or Space)"
+            >
+              <iconify-icon
+                id="microphone-icon"
+                icon="lucide:mic"
+                width="64"
+                height="64"
+                class="text-white"
+              ></iconify-icon>
+              <iconify-icon
+                id="stop-icon"
+                icon="mdi:stop-circle"
+                width="64"
+                height="64"
+                class="text-white"
+                style="display: none;"
+              ></iconify-icon>
+            </button>
+            <div
+              class="absolute inset-0 rounded-[24px] border-gradient pointer-events-none"
+            ></div>
+          </div>
         </sapling-island>
       </div>
     </div>

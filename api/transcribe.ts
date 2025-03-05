@@ -23,7 +23,7 @@ export async function geminiFlashTranscribe(c: Context) {
 
     const googleAIClient = new GoogleGenerativeAI(apiKey);
     const model = googleAIClient.getGenerativeModel({
-      model: "gemini-2.0-flash-lite",
+      model: "gemini-2.0-flash",
       systemInstruction: transcribeAudioPrompt,
       generationConfig: {
         maxOutputTokens: 8192,
