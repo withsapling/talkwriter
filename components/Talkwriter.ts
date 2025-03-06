@@ -251,9 +251,32 @@ export function Talkwriter() {
                       audioStream.getTracks().forEach((track) => track.stop());
                     }
 
-                    audioStream = await navigator.mediaDevices.getUserMedia({
-                      audio: true,
-                    });
+                    // Get preferred microphone from localStorage
+                    const preferredMicrophoneId = localStorage.getItem(
+                      "preferred-microphone-id"
+                    );
+                    console.log(
+                      "Using preferred microphone ID:",
+                      preferredMicrophoneId
+                    );
+
+                    const constraints = {
+                      audio: preferredMicrophoneId
+                        ? { deviceId: { exact: preferredMicrophoneId } }
+                        : true,
+                    };
+                    console.log("Using constraints:", constraints);
+
+                    audioStream = await navigator.mediaDevices.getUserMedia(
+                      constraints
+                    );
+                    console.log(
+                      "Got audio stream with tracks:",
+                      audioStream.getAudioTracks().map((track) => ({
+                        label: track.label,
+                        id: track.id,
+                      }))
+                    );
 
                     mediaRecorder = new MediaRecorder(audioStream);
                     audioChunks = [];

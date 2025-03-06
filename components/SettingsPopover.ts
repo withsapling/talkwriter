@@ -11,6 +11,13 @@ export function SettingsPopover() {
     >
       <div class="py-1" role="none">
         <a
+          href="/settings"
+          class="block px-4 py-2 text-sm text-on-background hover:bg-gray-100"
+          role="menuitem"
+        >
+          Settings
+        </a>
+        <a
           href="#"
           class="block px-4 py-2 text-sm text-on-background hover:bg-gray-100"
           role="menuitem"

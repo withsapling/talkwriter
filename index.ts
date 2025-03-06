@@ -2,6 +2,7 @@ import { Sapling, serveStatic, type Context } from "@sapling/sapling";
 import NotFoundLayout from "./layouts/NotFoundLayout.ts";
 import { Home } from "./pages/Home.ts";
 import { geminiFlashTranscribe } from "./api/transcribe.ts";
+import { Settings } from "./pages/Settings.ts";
 
 const site = new Sapling({
   // this will disable caching for static files in development
@@ -11,6 +12,7 @@ const site = new Sapling({
 
 // Home page
 site.get("/", async (c: Context) => c.html(await Home()));
+site.get("/settings", async (c: Context) => c.html(await Settings()));
 // Enter additional routes here
 
 site.post("/api/transcribe", (c: Context) => geminiFlashTranscribe(c));
