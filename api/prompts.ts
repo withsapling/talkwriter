@@ -25,10 +25,4 @@ IMPORTANT: If you don't hear anything or did not receive any audio, respond with
   "error": "No audio received"
 }
 </example_error_output>
-
-<example_output>
-{
-  "transcription": "The transcription of the audio file"
-}
-</example_output>
 `;

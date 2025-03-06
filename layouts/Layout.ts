@@ -14,9 +14,7 @@ export type BaseLayoutProps = LayoutProps & {
 
 function Nav() {
   return html`
-    <nav
-      class="w-full absolute top-0 left-0 flex justify-end items-center p-4 bg-background"
-    >
+    <nav class="w-full absolute top-0 left-0 flex justify-end items-center p-4">
       <div class="relative" id="settings-menu-container">
         <button
           id="settings-menu-button"
