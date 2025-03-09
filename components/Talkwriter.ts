@@ -106,19 +106,8 @@ export function Talkwriter() {
                 border: none;
                 font-weight: 500;
                 box-shadow: -1px 2px 4px rgba(0, 0, 0, 0.1);
-                transform: translateY(0) translateX(0) rotate(0deg);
-                transform-origin: center bottom;
                 transition: all 0.08s ease-in-out;
                 border-top: 1px solid rgba(255, 255, 255, 0.1);
-              }
-
-              #new-recording-button:active,
-              #copy-button:active,
-              #new-recording-button.pressed,
-              #copy-button.pressed {
-                transform: translateY(2px) translateX(1px) rotate(0.5deg);
-                box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
-                border-top-color: transparent;
               }
 
               #new-recording-button {
@@ -203,19 +192,6 @@ export function Talkwriter() {
                     "click",
                     resetForNewRecording
                   );
-
-                  // Add press effect
-                  newRecordingButton.addEventListener("mousedown", () => {
-                    newRecordingButton.classList.add("pressed");
-                  });
-
-                  newRecordingButton.addEventListener("mouseup", () => {
-                    newRecordingButton.classList.remove("pressed");
-                  });
-
-                  newRecordingButton.addEventListener("mouseleave", () => {
-                    newRecordingButton.classList.remove("pressed");
-                  });
                 }
 
                 // Handle copy button click
@@ -228,19 +204,6 @@ export function Talkwriter() {
                           console.error("Failed to copy to clipboard:", err);
                         });
                     }
-                  });
-
-                  // Add press effect
-                  copyButton.addEventListener("mousedown", () => {
-                    copyButton.classList.add("pressed");
-                  });
-
-                  copyButton.addEventListener("mouseup", () => {
-                    copyButton.classList.remove("pressed");
-                  });
-
-                  copyButton.addEventListener("mouseleave", () => {
-                    copyButton.classList.remove("pressed");
                   });
                 }
 
