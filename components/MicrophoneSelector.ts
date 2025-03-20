@@ -65,6 +65,11 @@ export function MicrophoneSelector() {
               )
             );
 
+            // Check if saved microphone exists in current devices
+            const savedMicrophoneExists = audioInputs.some(
+              (device) => device.deviceId === savedMicrophoneId
+            );
+
             // Add available microphones
             audioInputs.forEach((device) => {
               const label =
@@ -75,6 +80,22 @@ export function MicrophoneSelector() {
                 createOption(device.deviceId, label, isSelected)
               );
             });
+
+            // If saved microphone doesn't exist in current devices and it's not "default",
+            // add it as a disabled option
+            if (
+              savedMicrophoneId &&
+              savedMicrophoneId !== "default" &&
+              !savedMicrophoneExists
+            ) {
+              const savedOption = createOption(
+                savedMicrophoneId,
+                "Previously Selected Microphone (Not Available)",
+                true
+              );
+              savedOption.disabled = true;
+              microphoneSelect.appendChild(savedOption);
+            }
           } catch (error) {
             console.error("Error loading microphones:", error);
             microphoneSelect.appendChild(

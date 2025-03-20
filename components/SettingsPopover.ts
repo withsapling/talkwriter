@@ -4,7 +4,7 @@ export function SettingsPopover() {
   return html`
     <div
       id="settings-popover"
-      class="absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-background text-on-background ring-1 ring-black ring-opacity-5 hidden"
+      class="absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-background text-on-background ring-1 ring-black ring-opacity-5 hidden z-50"
       role="menu"
       aria-orientation="vertical"
       aria-labelledby="settings-menu-button"
@@ -12,23 +12,37 @@ export function SettingsPopover() {
       <div class="py-1" role="none">
         <a
           href="/settings"
-          class="block px-4 py-2 text-sm text-on-background hover:bg-gray-100"
+          class="block px-4 py-2 text-sm text-on-background hover:bg-gray-700 transition-colors duration-150"
           role="menuitem"
         >
           Settings
         </a>
-        <a
-          href="#"
-          class="block px-4 py-2 text-sm text-on-background hover:bg-gray-100"
-          role="menuitem"
-          id="clear-api-key"
-        >
-          Clear API Key
-        </a>
+        <sapling-island>
+          <button
+            id="clear-api-key"
+            class="w-full text-left px-4 py-2 text-sm text-on-background hover:bg-gray-700 transition-colors duration-150"
+            role="menuitem"
+          >
+            Clear API Key
+          </button>
+          <script type="module">
+            const clearButton = document.getElementById("clear-api-key");
+
+            if (clearButton) {
+              clearButton.addEventListener("click", () => {
+                if (confirm("Are you sure you want to clear your API key?")) {
+                  localStorage.removeItem("geminiApiKey");
+                  // Reload the page to reset the application state
+                  window.location.reload();
+                }
+              });
+            }
+          </script>
+        </sapling-island>
         <a
           href="https://github.com/yourusername/talkwriter"
           target="_blank"
-          class="block px-4 py-2 text-sm text-on-background hover:bg-gray-100"
+          class="block px-4 py-2 text-sm text-on-background hover:bg-gray-700 transition-colors duration-150"
           role="menuitem"
         >
           GitHub Repository
@@ -43,7 +57,6 @@ export function SettingsPopover() {
           "settings-menu-button"
         );
         const settingsPopover = document.getElementById("settings-popover");
-        const clearApiKey = document.getElementById("clear-api-key");
 
         // Toggle popover visibility when menu button is clicked
         settingsMenuButton.addEventListener("click", () => {
@@ -58,15 +71,6 @@ export function SettingsPopover() {
           ) {
             settingsPopover.classList.add("hidden");
           }
-        });
-
-        // Clear API key functionality
-        clearApiKey.addEventListener("click", (e) => {
-          e.preventDefault();
-          localStorage.removeItem("gemini-api-key");
-          settingsPopover.classList.add("hidden");
-          // Reload the page to show the API key form
-          window.location.reload();
         });
       </script>
     </sapling-island>

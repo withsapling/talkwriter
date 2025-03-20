@@ -9,9 +9,19 @@ export async function Settings() {
     description: "Configure your Talkwriter settings",
     children: await html`
       <main
-        class="max-w-screen-lg min-h-screen mx-auto px-4 py-8 flex flex-col items-center justify-start font-sans"
+        class="max-w-screen-lg min-h-screen mx-auto px-4 pt-16 pb-8 flex flex-col items-center justify-start font-sans"
       >
         <div class="w-full max-w-2xl">
+          <a
+            href="/"
+            class="inline-flex items-center text-primary hover:underline mb-4"
+          >
+            <iconify-icon
+              icon="mdi:arrow-left"
+              class="h-5 w-5 mr-1"
+            ></iconify-icon>
+            Back to Home
+          </a>
           <h1 class="text-3xl font-bold mb-8">Settings</h1>
 
           <div class="space-y-8">
@@ -22,7 +32,9 @@ export async function Settings() {
 
             <section class="p-6 rounded-lg shadow">
               <h2 class="text-xl font-semibold mb-4">API Configuration</h2>
-              <div class="space-y-4">${GeminiApiKeyForm()}</div>
+              <div class="space-y-4">
+                ${GeminiApiKeyForm({ isSettingsPage: true })}
+              </div>
             </section>
 
             <section class="p-6 rounded-lg shadow">
